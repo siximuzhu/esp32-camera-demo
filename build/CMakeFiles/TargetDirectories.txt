@@ -1,2 +1,0 @@
-E:/workspace/web_camera/esp32-camera/build/CMakeFiles/edit_cache.dir
-E:/workspace/web_camera/esp32-camera/build/CMakeFiles/rebuild_cache.dir
