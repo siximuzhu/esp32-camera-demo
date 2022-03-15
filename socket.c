@@ -26,8 +26,8 @@
    If you'd rather not, just change the below entries to strings with
    the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
 */
-#define EXAMPLE_ESP_WIFI_SSID   "HUAWEI P20 Pro"
-#define EXAMPLE_ESP_WIFI_PASS   "87654321"
+#define EXAMPLE_ESP_WIFI_SSID   "HUAWEI-TEST"//"HUAWEI P20 Pro"
+#define EXAMPLE_ESP_WIFI_PASS   "12345678"
 
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY  			3
@@ -189,7 +189,7 @@ int connect_host(char* ip,int port)
 
     serverAddress.sin_family = AF_INET;//IPV4协议
 
-    inet_pton(AF_INET, "124.71.221.251", &serverAddress.sin_addr.s_addr);//ip地址转换，将点分十进制转换成二进制整数，这里的"192.168.191.1"为所连接的主机的IP地址，根据自己实际情况填写
+    inet_pton(AF_INET, "124.71.221.251", &serverAddress.sin_addr.s_addr);  //124.71.221.251
 
     serverAddress.sin_port = htons(12345);//将整型变量从主机字节序转变成网络字节序
 
@@ -219,9 +219,17 @@ int connect_host(char* ip,int port)
 
 int socket_send_to_host(int sock,char *data,int len)
 {
-	 int  rc = send(sock, data, len, 0);//发送数据
+    char recv_data[10];
 
-	 return rc;
+    memset(recv_data,0x0,10);
+
+	int  rc = send(sock, data, len, 0);//发送数据
+
+    rc = recv(sock,recv_data,7,0);
+
+    ESP_LOGI(TAG, "%s", recv_data);
+
+	return rc;
 }
 
 

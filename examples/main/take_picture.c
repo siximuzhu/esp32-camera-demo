@@ -58,11 +58,11 @@
 #include <esp_heap_caps.h>
 
 #define WIFI_SSID			"HUAWEI P20 Pro"
-#define WIFI_PWD			"87654321"
+#define WIFI_PWD			"12345678"
 #define HOST_IP				"124.71.221.251"
 #define HOST_PORT			12345
 
-#define OV5640_AF			1
+#define OV5640_AF			0
 
 //#define BOARD_WROVER_KIT 1
 //#define BOARD_ESP32CAM_AITHINKER 1
@@ -176,9 +176,9 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG, //YUV422,GRAYSCALE,RGB565,JPEG
-    .frame_size = FRAMESIZE_QSXGA,    //QQVGA-UXGA Do not use sizes above QVGA when not JPEG
+    .frame_size = FRAMESIZE_VGA,    //QQVGA-UXGA Do not use sizes above QVGA when not JPEG
 
-    .jpeg_quality = 40,//3 12, //0-63 lower number means higher quality
+    .jpeg_quality = 5,//3 12, //0-63 lower number means higher quality
     .fb_count = 2,       //if more than one, i2s runs in continuous mode. Use only with JPEG
     .grab_mode = CAMERA_GRAB_LATEST,
 };
@@ -195,79 +195,6 @@ static esp_err_t init_camera()
 
     return ESP_OK;
 }
-#define MOUNT_POINT "/sdcard"
-
-void tf_write_pic(unsigned char *data,unsigned int len,int pic_index)
-{
-
-    esp_err_t ret;
-
-    esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-        .format_if_mount_failed = false,
-        .max_files = 5,
-        .allocation_unit_size = 16 * 1024
-    };
-    sdmmc_card_t* card;
-    const char mount_point[] = MOUNT_POINT;
-    ESP_LOGI(TAG, "Initializing SD card");
-
-    ESP_LOGI(TAG, "Using SDMMC peripheral");
-    sdmmc_host_t host = SDMMC_HOST_DEFAULT();
-
-    // This initializes the slot without card detect (CD) and write protect (WP) signals.
-    // Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
-    sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
-
-    // To use 1-line SD mode, uncomment the following line:
-    // slot_config.width = 1;
-
-    // GPIOs 15, 2, 4, 12, 13 should have external 10k pull-ups.
-    // Internal pull-ups are not sufficient. However, enabling internal pull-ups
-    // does make a difference some boards, so we do that here.
-    gpio_set_pull_mode(15, GPIO_PULLUP_ONLY);   // CMD, needed in 4- and 1- line modes
-    gpio_set_pull_mode(2, GPIO_PULLUP_ONLY);    // D0, needed in 4- and 1-line modes
-    gpio_set_pull_mode(4, GPIO_PULLUP_ONLY);    // D1, needed in 4-line mode only
-    gpio_set_pull_mode(12, GPIO_PULLUP_ONLY);   // D2, needed in 4-line mode only
-    gpio_set_pull_mode(13, GPIO_PULLUP_ONLY);   // D3, needed in 4- and 1-line modes
-
-    ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
-
-    if (ret != ESP_OK) {
-        if (ret == ESP_FAIL) {
-            ESP_LOGE(TAG, "Failed to mount filesystem. "
-                "If you want the card to be formatted, set the EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
-        } else {
-            ESP_LOGE(TAG, "Failed to initialize the card (%s). "
-                "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
-        }
-        return;
-    }
-
-    sdmmc_card_print_info(stdout, card);
-
-    // Use POSIX and C standard library functions to work with files.
-    // First create a file.
-    ESP_LOGI(TAG, "Opening file");
-    //FILE* f = fopen(MOUNT_POINT"/hello.jpg", "w");
-    char path[20];
-    sprintf(path,"/sdcard/hello%d.jpg",pic_index);
-    FILE* f = fopen(path, "w");
-    if (f == NULL) {
-        ESP_LOGE(TAG, "Failed to open file for writing");
-        return;
-    }
-
-
-    fwrite(data,len,1,f);
-    fclose(f);
-
-   
-
-    // All done, unmount partition and disable SDMMC or SPI peripheral
-    esp_vfs_fat_sdcard_unmount(mount_point, card);
-    ESP_LOGI(TAG, "Card unmounted");
-}
-
 
 extern void socket_test(void);
 extern void connect_wifi(void);
@@ -321,25 +248,21 @@ void send_one_picture(int sock)
 
    int64_t fr_end = esp_timer_get_time();
 	g_count++;
-// 		ESP_LOGI(TAG, " write pic...");
-// 		tf_write_pic(pic->buf,pic->len,g_count);
-//			ESP_LOGI(TAG, " write pic ok...");
-
 
    ESP_LOGI(TAG, "%d Picture taken! Its size was: %zu bytes，w = %d, h = %d time = %.2f ms", g_count,pic->len,pic->width,pic->height,((fr_end - fr_start)/1000.0));
 
-	upload_image(pic->buf,pic->len);
+//	upload_image(pic->buf,pic->len);
 
-#if 0
+#if 1
    char string[10];
    memset(string ,0x0,10);
 
    memcpy(string,&(pic->len),sizeof(size_t));
    socket_send_to_host(sock,string,10);
 
-   vTaskDelay(50 / portTICK_RATE_MS);
+//   vTaskDelay(50 / portTICK_RATE_MS);
    socket_send_to_host(sock,(char*)(pic->buf),pic->len);
-   vTaskDelay(500 / portTICK_RATE_MS);
+//   vTaskDelay(500 / portTICK_RATE_MS);
 #endif
    esp_camera_fb_return(pic);
 
@@ -352,7 +275,7 @@ void app_main()
 	unsigned int voltage;
 	bool led_status = false;
 
-	ble_init(); 
+//	ble_init(); 
 
 	key_init();
 	adc_init();
@@ -395,12 +318,12 @@ void app_main()
 		ESP_LOGI(TAG, "autoFocus fail...");
 	}
 #endif  
-	int continue_flag = 0;
+	int continue_flag = 0;  
     while(1)
     {
 		key = get_pressed_key();
 		switch (key)
-		{
+		{ 
 			case KEY1_PRESSED:
 				ESP_LOGI(TAG, "KEY1_PRESSED");
 				send_one_picture(sock);
@@ -432,13 +355,14 @@ void app_main()
 		}
 		if(continue_flag == 1)
 			send_one_picture(sock);
+#if 0
 		voltage = adc_get_voltage();
 		if(voltage < 2400)//mV
 		{
 			ESP_LOGI(TAG,"voltage = %d",voltage); 
 			send_one_picture(sock);
 		}
-		
+#endif		
 	 	vTaskDelay(10 / portTICK_RATE_MS);
     }
 

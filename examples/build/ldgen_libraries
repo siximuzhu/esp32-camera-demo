@@ -36,7 +36,6 @@ E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/newlib/libnewlib.a
 E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/cxx/libcxx.a
 E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/app_trace/libapp_trace.a
 E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/asio/libasio.a
-E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/bt/libbt.a
 E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/cbor/libcbor.a
 E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/unity/libunity.a
 E:/workspace/web_camera/esp32-camera/examples/build/esp-idf/cmock/libcmock.a

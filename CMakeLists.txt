@@ -1,9 +1,9 @@
 if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET STREQUAL "esp32s3")
   set(COMPONENT_SRCS
-    ble/ble_main.c
-    ble/gatt_svr.c
-    ble/misc.c
-    ble/scli.c
+   # ble/ble_main.c
+   # ble/gatt_svr.c
+   # ble/misc.c
+   # ble/scli.c
     base64.c
     adc_demo.c
     key.c
