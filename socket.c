@@ -189,7 +189,7 @@ int connect_host(char* ip,int port)
 
     serverAddress.sin_family = AF_INET;//IPV4协议
 
-    inet_pton(AF_INET, "124.71.221.251", &serverAddress.sin_addr.s_addr);  //124.71.221.251
+    inet_pton(AF_INET, "192.168.3.2", &serverAddress.sin_addr.s_addr);  //124.71.221.251
 
     serverAddress.sin_port = htons(12345);//将整型变量从主机字节序转变成网络字节序
 

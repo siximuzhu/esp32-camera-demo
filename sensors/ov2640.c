@@ -159,10 +159,10 @@ static int set_window(sensor_t *sensor, ov2640_sensor_mode_t mode, int offset_x,
     };
 
     if (sensor->pixformat == PIXFORMAT_JPEG) {
-        c.clk_2x = 0;
+        c.clk_2x = 1;  //0
         c.clk_div = 0;
-        c.pclk_auto = 0;
-        c.pclk_div = 8;
+        c.pclk_auto = 0;  //0
+        c.pclk_div = 8;     //8
         if(mode == OV2640_MODE_UXGA) {
             c.pclk_div = 12;
         }
