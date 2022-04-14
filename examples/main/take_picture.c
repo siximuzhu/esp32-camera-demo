@@ -176,9 +176,9 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG, //YUV422,GRAYSCALE,RGB565,JPEG
-    .frame_size = FRAMESIZE_VGA,    //QQVGA-UXGA Do not use sizes above QVGA when not JPEG
+    .frame_size = FRAMESIZE_SVGA,    //QQVGA-UXGA Do not use sizes above QVGA when not JPEG
 
-    .jpeg_quality = 5,//3 12, //0-63 lower number means higher quality
+    .jpeg_quality = 12,//3 12, //0-63 lower number means higher quality
     .fb_count = 2,       //if more than one, i2s runs in continuous mode. Use only with JPEG
     .grab_mode = CAMERA_GRAB_LATEST,
 };
@@ -210,6 +210,7 @@ extern int upload_image(const unsigned char *image_src,unsigned int image_len);
 extern unsigned int get_pressed_key(void);
 extern void switch_flash_led(bool flag);
 extern void ble_init(void);
+extern void web_server(void);
 
 
 
@@ -280,15 +281,15 @@ void app_main()
 	key_init();
 	adc_init();
 
-#if 1
-	connect_wifi();
 
+	connect_wifi();
+#if 0
 	int sock = connect_host(HOST_IP,HOST_PORT);
 	socket_send_to_host(sock,"esp32",5);
 #else
 	int sock = 0;
 #endif
-
+	web_server();
 
      ESP_LOGI(TAG, "begin init camera...");
     if(ESP_OK != init_camera()) {

@@ -4,6 +4,7 @@ if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET ST
    # ble/gatt_svr.c
    # ble/misc.c
    # ble/scli.c
+    webserver.c
     base64.c
     adc_demo.c
     key.c
@@ -68,7 +69,7 @@ if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET ST
       )
   endif()
 
-  set(COMPONENT_REQUIRES driver esp_adc_cal esp_http_client esp-tls json console bt)
+  set(COMPONENT_REQUIRES driver esp_adc_cal esp_http_client esp-tls json console bt esp_http_server)
   set(COMPONENT_PRIV_REQUIRES freertos nvs_flash)
 
 
